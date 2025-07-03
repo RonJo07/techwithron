@@ -20,7 +20,7 @@ class PortfolioChatbot {
         const chatbotHTML = `
             <div id="chatbot-container">
                 <div id="chat-icon">
-                    <img src="LunaAI.png" alt="OrionAI" />
+                    <img src="OrionAI.png" alt="OrionAI" />
                     <div id="chatbot-popup">Hey, I'm Orion! Chat with me!</div>
                 </div>
                 <div id="chat-window">
