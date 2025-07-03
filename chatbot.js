@@ -31,13 +31,6 @@ class PortfolioChatbot {
                     <div id="chat-messages">
                         <div class="bot-message">Hi! I'm OrionAI, Ron Jo's AI assistant. Ask me anything about Ron's experience, projects, or skills!</div>
                     </div>
-                    <div id="name-modal">
-                        <div>Please enter your name:</div>
-                        <div style="display:flex;gap:.5rem;">
-                            <input type="text" id="name-input" placeholder="Your name">
-                            <button id="submit-name">Send</button>
-                        </div>
-                    </div>
                     <div id="email-modal">
                         <div>Please provide your email:</div>
                         <div style="display:flex;gap:.5rem;">
@@ -255,43 +248,6 @@ class PortfolioChatbot {
     background: #222;
     box-shadow: 0 2px 8px #1112;
 }
-#chatbot-container #name-modal {
-    display: none;
-    padding: 1rem;
-    border-top: 1px solid #e5e7eb;
-    background: #fff;
-    flex-direction: column;
-    gap: .5rem;
-}
-#chatbot-container #name-input {
-    flex: 1;
-    border: 1px solid #cbd5e1;
-    border-radius: .5rem;
-    padding: .5rem;
-    font-size: .97rem;
-    outline: none;
-    color: #111;
-    background: #fff;
-    transition: border-color .2s;
-}
-#chatbot-container #name-input:focus {
-    border-color: #111;
-}
-#chatbot-container #submit-name {
-    background: #111;
-    color: #fff;
-    padding: .5rem 1rem;
-    border: none;
-    border-radius: .5rem;
-    cursor: pointer;
-    font-size: .97rem;
-    transition: background .2s, box-shadow .2s;
-}
-#chatbot-container #submit-name:hover, 
-#chatbot-container #submit-name:focus {
-    background: #222;
-    box-shadow: 0 2px 8px #1112;
-}
 #chatbot-container .chat-footer {
     background: #f1f5f9;
     color: #222;
@@ -315,8 +271,6 @@ class PortfolioChatbot {
         const chatInput = document.getElementById('chat-input');
         const submitEmail = document.getElementById('submit-email');
         const emailInput = document.getElementById('email-input');
-        const submitName = document.getElementById('submit-name');
-        const nameInput = document.getElementById('name-input');
 
         chatIcon.addEventListener('click', () => {
             this.toggleChat();
@@ -330,10 +284,6 @@ class PortfolioChatbot {
         submitEmail.addEventListener('click', () => this.submitEmail());
         emailInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.submitEmail();
-        });
-        submitName.addEventListener('click', () => this.submitName());
-        nameInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') this.submitName();
         });
     }
 
@@ -367,16 +317,24 @@ class PortfolioChatbot {
         this.addMessage(message, 'user');
         input.value = '';
         this.showTypingIndicator();
+
+        // If waiting for name, treat this message as the user's name
+        const messagesContainer = document.getElementById('chat-messages');
+        const lastBotMessage = Array.from(messagesContainer.getElementsByClassName('bot-message')).pop();
+        if (!this.userName && lastBotMessage && /may I know your name\?|please tell your name|what is your name/i.test(lastBotMessage.textContent)) {
+            this.userName = message;
+            this.hideTypingIndicator();
+            // Greet the user by name
+            this.addMessage(`Welcome, ${this.userName}! How can I help you today?`, 'bot');
+            return;
+        }
+
         try {
             let response = await this.getAIResponse(message);
             this.isFirstMessage = false;
             this.hideTypingIndicator();
             if (response.response === "Before we continue, may I know your name?") {
-                this.showNamePrompt();
-                if (this.userName) {
-                    response = await this.getAIResponse(message);
-                    this.addMessage(response.response, 'bot');
-                }
+                this.addMessage("Hi, my name is OrionAI, Ron Jo's AI assistant. Before we begin, may I know your name?", 'bot');
             } else if (response.needsEmailCollection) {
                 this.showEmailCollection();
             } else {
@@ -452,28 +410,6 @@ class PortfolioChatbot {
     hideTypingIndicator() {
         const typingIndicator = document.getElementById('typing-indicator');
         if (typingIndicator) typingIndicator.remove();
-    }
-
-    showNamePrompt() {
-        document.getElementById('name-modal').style.display = 'flex';
-        document.getElementById('chat-input-container').style.display = 'none';
-    }
-
-    hideNamePrompt() {
-        document.getElementById('name-modal').style.display = 'none';
-        document.getElementById('chat-input-container').style.display = 'flex';
-    }
-
-    submitName() {
-        const nameInput = document.getElementById('name-input');
-        const name = nameInput.value.trim();
-        if (!name) {
-            alert('Please enter your name');
-            return;
-        }
-        this.userName = name;
-        this.hideNamePrompt();
-        nameInput.value = '';
     }
 }
 
