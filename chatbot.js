@@ -89,20 +89,23 @@ class PortfolioChatbot {
 }
 #chatbot-container #chatbot-popup {
     position: absolute;
-    bottom: 70px;
-    left: 50%;
-    transform: translateX(-50%);
+    bottom: 50%;
+    right: 70px;
+    left: auto;
+    transform: translateY(50%);
     background: #111;
     color: #fff;
-    padding: 8px 16px;
-    border-radius: 16px;
-    font-size: 0.95rem;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.85rem;
     white-space: nowrap;
     box-shadow: 0 2px 8px #0004;
     opacity: 1;
     pointer-events: auto;
     transition: opacity 0.3s;
     z-index: 10000;
+    min-width: 120px;
+    max-width: 180px;
 }
 #chatbot-container #chatbot-popup.hidden {
     opacity: 0;
