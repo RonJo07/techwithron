@@ -194,6 +194,24 @@ INSTRUCTIONS:
     return res.json({ response: aiResponse, requiresEmail, needsEmailCollection });
   }
 
+  // Custom handling for strengths and weaknesses
+  if (/strength.*weakness|weakness.*strength|strengths|weaknesses/i.test(message)) {
+    aiResponse = "Ron's strengths include problem-solving, adaptability, and a passion for learning new technologies. He is known for his attention to detail, strong work ethic, and collaborative spirit. As for weaknesses, Ron is always striving to improve his time management and sometimes gets deeply absorbed in perfecting his projects.";
+    return res.json({ response: aiResponse, requiresEmail, needsEmailCollection });
+  }
+
+  // Custom handling for blog
+  if (/blog/i.test(message)) {
+    aiResponse = "Ron occasionally shares insights and tutorials on technology, coding, and career growth, but there is no official blog link available at the moment. If you would like to know more or get updates, let me know and I can forward your request to Ron.";
+    return res.json({ response: aiResponse, requiresEmail, needsEmailCollection });
+  }
+
+  // Custom handling for 'where is my ai' or similar unknowns
+  if (/where is my ai|where.*ai/i.test(message)) {
+    aiResponse = "I'm here to help as Ron Jo's AI assistant! If you have a specific question or need assistance, please let me know. If you're looking for a different AI or feature, I can forward your request to Ron for more information.";
+    return res.json({ response: aiResponse, requiresEmail, needsEmailCollection });
+  }
+
   // Try Gemini AI if available
   if (GEMINI_API_KEY) {
     try {
@@ -237,7 +255,7 @@ INSTRUCTIONS:
       ) {
         requiresEmail = true;
         await sendEmailToRon({ userMessage: message, userEmail });
-        aiResponse = "I don't have specific information about that. I've forwarded your question to Ron, and he'll get back to you soon.";
+        aiResponse = "I'm sorry, I don't have specific information about that right now. I've forwarded your question to Ron, and he'll get back to you soon. Thank you for your interest!";
       }
     } catch (e) {
       aiResponse = "Sorry, I couldn't process your request right now. Please leave your email and I'll get back to you!";
