@@ -318,14 +318,16 @@ class PortfolioChatbot {
         input.value = '';
         this.showTypingIndicator();
 
-        // If waiting for name, treat this message as the user's name
         const messagesContainer = document.getElementById('chat-messages');
         const lastBotMessage = Array.from(messagesContainer.getElementsByClassName('bot-message')).pop();
+
+        // If waiting for name, treat this message as the user's name
         if (!this.userName && lastBotMessage && /may I know your name\?|please tell your name|what is your name/i.test(lastBotMessage.textContent)) {
             this.userName = message;
             this.hideTypingIndicator();
-            // Greet the user by name
-            this.addMessage(`Welcome, ${this.userName}! How can I help you today?`, 'bot');
+            // Immediately send a new message to the backend with the name to get a personalized greeting
+            const response = await this.getAIResponse(""); // send an empty message, but with userName set
+            this.addMessage(response.response.replace(/LunaAI/g, 'OrionAI').replace(/Luna AI/g, 'Orion AI'), 'bot');
             return;
         }
 
