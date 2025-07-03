@@ -49,13 +49,13 @@ async function sendEmailToRon({ userMessage, userEmail }) {
 
 // Main handler
 module.exports = async (req, res) => {
-  // Set CORS headers for every request
+  // Set CORS headers for every request, at the very top
   res.setHeader('Access-Control-Allow-Origin', ALLOWED_ORIGIN);
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   res.setHeader('Vary', 'Origin');
 
-  // Handle preflight OPTIONS request
+  // Handle preflight OPTIONS request immediately
   if (req.method === 'OPTIONS') {
     res.status(200).end();
     return;
