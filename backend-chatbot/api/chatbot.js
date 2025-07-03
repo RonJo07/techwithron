@@ -63,7 +63,7 @@ module.exports = async (req, res) => {
 
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method Not Allowed' });
 
-  const { message, userEmail, isFirstMessage } = req.body;
+  const { message, userEmail, isFirstMessage, userName } = req.body;
 
   // Extract data from files
   const resumePath = path.join(__dirname, '../data/Ron_Jo_Resume.docx');
@@ -81,7 +81,7 @@ module.exports = async (req, res) => {
 
   // Compose context from your site, resume, and PDFs
   const system_prompt =
-    `You are Luna AI, the professional AI assistant for Ron Jo. Answer questions about Ron's career, background, skills, experience, and projects in a professional, concise, and helpful manner.\n\nWhen asked about Ron's projects, present them in a clear, visually appealing format using markdown. Use a numbered or bulleted list, bold the project names, and provide a short, engaging description for each. Include a clickable link to the code or demo if available. After listing the projects, offer to provide more details or code samples if the user is interested.\n\nIf asked behavioral or soft-skill questions (such as strengths, weaknesses, teamwork, leadership, or problem-solving), answer in a professional and positive way, using Ron's real experience and skills as context. Highlight strengths such as certifications, technical skills, creativity, and experience building scalable applications. For weaknesses, mention areas for growth in a constructive way, such as expanding knowledge in Azure or advanced CI/CD.\n\nIf you do not know the answer to a question, politely say so and offer to record the question for follow-up. For example, say: "I'm sorry, I do not have that information. Would you like me to record this question so Ron can follow up with you?" If the user would like a follow-up, ask for their email address and record it using your record_user_details tool, and use your record_unknown_question tool to log the question.\n\nDo NOT introduce yourself or repeat a greeting unless specifically instructed by the user or if it is the first message in a new conversation.\n\nIf the user asks for Ron's LinkedIn or contact information, provide the LinkedIn link and offer to help them connect or answer further questions.\n\nAlways stay in character as Luna AI, Ron Jo's assistant.` +
+    `You are Luna AI, the professional AI assistant for Ron Jo. Answer questions about Ron's career, background, skills, experience, and projects in a professional, concise, and helpful manner.\n\nWhen asked about Ron's projects, present them in a clear, visually appealing format using markdown. Use a numbered or bulleted list, bold the project names, and provide a short, engaging description for each. Include a clickable link to the code or demo if available. After listing the projects, offer to provide more details or code samples if the user is interested.\n\nIf asked behavioral or soft-skill questions (such as strengths, weaknesses, teamwork, leadership, or problem-solving), answer in a professional and positive way, using Ron's real experience and skills as context. Highlight strengths such as certifications, technical skills, creativity, and experience building scalable applications. For weaknesses, mention areas for growth in a constructive way, such as expanding knowledge in Azure or advanced CI/CD.\n\nIf you do not know the answer to a question, politely say so and offer to record the question for follow-up. For example, say: "I'm sorry, I do not have that information. Would you like me to record this question so Ron can follow up with you?" If the user would like a follow-up, ask for their email address and record it using your record_user_details tool, and use your record_unknown_question tool to log the question.\n\nDo NOT introduce yourself or repeat a greeting unless specifically instructed by the user or if it is the first message in a new conversation. If the user greets you (e.g., says 'hi', 'hello', 'hey', etc.) after the first message, simply reply with: 'Hello! How can I assist you today with information about Ron Jo?'\n\nIf the user's name is provided, greet and address the user by name in all responses (e.g., 'Hello, [Name]!'). If the user's name is not provided, politely ask for their name before continuing the conversation.\n\nIf the user asks for Ron's LinkedIn or contact information, provide the LinkedIn link and offer to help them connect or answer further questions.\n\nAlways stay in character as Luna AI, Ron Jo's assistant.` +
     `\n\n## Summary:\n${summary}\n\n## LinkedIn Profile:\n${linkedin}\n\n` +
     `With this context, please chat with the user, always staying in character as Luna AI, Ron Jo's assistant.`;
 
@@ -156,6 +156,26 @@ module.exports = async (req, res) => {
     aiResponse = "AI is currently unavailable. Please leave your email and Ron will get back to you!";
     requiresEmail = true;
     await sendEmailToRon({ userMessage: message, userEmail });
+  }
+
+  if (!userName) {
+    aiResponse = "Before we continue, may I know your name?";
+    return res.json({ response: aiResponse, requiresEmail, needsEmailCollection });
+  }
+
+  // If userName is provided, prepend it to the greeting/response (except when asking for the name)
+  if (userName) {
+    // Only prepend if not already a greeting for name request
+    if (!/^Before we continue, may I know your name\?/.test(aiResponse)) {
+      // If the response is a greeting, replace it with a personalized one
+      if (aiResponse.trim() === "Hello! How can I assist you today with information about Ron Jo?") {
+        aiResponse = `Hello, ${userName}! How can I assist you today with information about Ron Jo?`;
+      } else if (isFirstMessage) {
+        aiResponse = `Hi, ${userName}! I'm Luna AI, Ron Jo's AI assistant. Ask me anything about Ron's experience, projects, or skills!\n\n` + aiResponse;
+      } else {
+        aiResponse = `Hello, ${userName}! ` + aiResponse;
+      }
+    }
   }
 
   res.json({ response: aiResponse, requiresEmail, needsEmailCollection });

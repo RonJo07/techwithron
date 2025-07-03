@@ -5,6 +5,7 @@ class PortfolioChatbot {
         this.isOpen = false;
         this.userEmail = null;
         this.isFirstMessage = true;
+        this.userName = null;
         this.init();
     }
 
@@ -317,10 +318,16 @@ class PortfolioChatbot {
         input.value = '';
         this.showTypingIndicator();
         try {
-            const response = await this.getAIResponse(message);
+            let response = await this.getAIResponse(message);
             this.isFirstMessage = false;
             this.hideTypingIndicator();
-            if (response.needsEmailCollection) {
+            if (response.response === "Before we continue, may I know your name?") {
+                this.showNamePrompt();
+                if (this.userName) {
+                    response = await this.getAIResponse(message);
+                    this.addMessage(response.response, 'bot');
+                }
+            } else if (response.needsEmailCollection) {
                 this.showEmailCollection();
             } else {
                 this.addMessage(response.response, 'bot');
@@ -338,7 +345,8 @@ class PortfolioChatbot {
             body: JSON.stringify({ 
                 message, 
                 userEmail: this.userEmail,
-                isFirstMessage: this.isFirstMessage
+                isFirstMessage: this.isFirstMessage,
+                userName: this.userName
             })
         });
         if (!response.ok) throw new Error('API request failed');
@@ -394,6 +402,13 @@ class PortfolioChatbot {
     hideTypingIndicator() {
         const typingIndicator = document.getElementById('typing-indicator');
         if (typingIndicator) typingIndicator.remove();
+    }
+
+    showNamePrompt() {
+        const name = prompt("Before we continue, may I know your name?");
+        if (name && name.trim()) {
+            this.userName = name.trim();
+        }
     }
 }
 
