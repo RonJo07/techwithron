@@ -321,8 +321,11 @@ class PortfolioChatbot {
         const messagesContainer = document.getElementById('chat-messages');
         const lastBotMessage = Array.from(messagesContainer.getElementsByClassName('bot-message')).pop();
 
-        // If waiting for name, treat this message as the user's name
-        if (!this.userName && lastBotMessage && /may I know your name\?|please tell your name|what is your name/i.test(lastBotMessage.textContent)) {
+        if (
+            !this.userName &&
+            lastBotMessage &&
+            /name.*\?/i.test(lastBotMessage.textContent)
+        ) {
             this.userName = message;
             localStorage.setItem('userName', this.userName);
             this.hideTypingIndicator();
