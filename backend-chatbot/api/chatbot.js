@@ -225,10 +225,10 @@ INSTRUCTIONS:
 
       // Prepend OrionAI introduction if this is the first message
       if (isFirstMessage) {
-        aiResponse = "Hi! I'm OrionAI, Ron Jo's AI assistant. Ask me anything about Ron's experience, projects, or skills!\n\n" + aiResponse;
+        aiResponse = "Hi! I'm OrionAI, Ron Jo's AI assistant. Ask me anything about Ron's experience, projects, or skills!";
       } else if (/^\s*(hi|hello|hey|greetings|good morning|good afternoon|good evening)\s*$/i.test(message)) {
-        // If the user greets again, reply with a short greeting only
-        aiResponse = "Hello! How can I assist you today with information about Ron Jo?";
+        // If the user greets again, reply with a short greeting and a sample list of questions
+        aiResponse = "Hello! How can I help you today? Here is a sample list of common questions people ask:\n- What are Ron's hobbies?\n- What projects has Ron worked on?\n- How can I contact Ron?\n- What skills does Ron have?\n- What is Ron's LinkedIn?";
       }
 
       // If AI doesn't know, forward to Ron
