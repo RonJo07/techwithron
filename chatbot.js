@@ -16,13 +16,13 @@ class PortfolioChatbot {
     createChatbotHTML() {
         const chatbotHTML = `
             <div id="chatbot-container">
-                <div id="chat-icon">
-                    <svg width="28" height="28" fill="none" stroke="currentColor"><circle cx="14" cy="14" r="13" stroke-width="2"/><circle cx="9" cy="14" r="2"/><circle cx="14" cy="14" r="2"/><circle cx="19" cy="14" r="2"/></svg>
+                <div id="chat-icon" tabindex="0" aria-label="Open LunaAI chat">
+                    <img src="LunaAI.png" alt="LunaAI" />
                 </div>
-                <div id="chat-window">
+                <div id="chat-window" aria-modal="true" role="dialog">
                     <div class="chat-header">
                         <span>LunaAI</span>
-                        <button id="close-chat" title="Close">&times;</button>
+                        <button id="close-chat" title="Close" aria-label="Close chat">&times;</button>
                     </div>
                     <div id="chat-messages">
                         <div class="bot-message">Hi! I'm LunaAI, Ron Jo's AI assistant. Ask me anything about Ron's experience, projects, or skills!</div>
@@ -30,16 +30,16 @@ class PortfolioChatbot {
                     <div id="email-modal">
                         <div>Please provide your email:</div>
                         <div style="display:flex;gap:.5rem;">
-                            <input type="email" id="email-input" placeholder="your@email.com">
+                            <input type="email" id="email-input" placeholder="your@email.com" autocomplete="email">
                             <button id="submit-email">Send</button>
                         </div>
                     </div>
                     <div id="chat-input-container">
-                        <input type="text" id="chat-input" placeholder="Type your message...">
+                        <input type="text" id="chat-input" placeholder="Type your message..." autocomplete="off">
                         <button id="send-message">Send</button>
                     </div>
                     <div class="chat-footer">
-                        <span>AI chatbot developed by <a href="https://techwithron.co.in" target="_blank" rel="noopener" style="color:#06b6d4;text-decoration:underline;">techwithron</a></span>
+                        <span>AI chatbot developed by <a href="https://techwithron.co.in" target="_blank" rel="noopener" style="color:#ff3576;text-decoration:underline;">techwithron</a></span>
                     </div>
                 </div>
             </div>
@@ -58,8 +58,7 @@ class PortfolioChatbot {
     font-family: 'Segoe UI', Arial, sans-serif;
 }
 #chat-icon {
-    background: #06b6d4;
-    color: #fff;
+    background: linear-gradient(135deg, #ff3576 0%, #7b2ff2 100%);
     border-radius: 50%;
     width: 56px;
     height: 56px;
@@ -68,10 +67,20 @@ class PortfolioChatbot {
     justify-content: center;
     box-shadow: 0 2px 8px #0002;
     cursor: pointer;
-    transition: transform .2s;
+    transition: transform .2s, box-shadow .2s;
+    outline: none;
+    border: none;
 }
-#chat-icon:hover {
+#chat-icon:focus, #chat-icon:hover {
     transform: scale(1.08);
+    box-shadow: 0 4px 16px #7b2ff244;
+}
+#chat-icon img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
 }
 #chat-window {
     display: none;
@@ -89,7 +98,7 @@ class PortfolioChatbot {
     display: flex;
 }
 .chat-header {
-    background: #06b6d4;
+    background: linear-gradient(135deg, #ff3576 0%, #7b2ff2 100%);
     color: #fff;
     padding: 1rem 1.2rem;
     border-radius: 1rem 1rem 0 0;
@@ -106,6 +115,10 @@ class PortfolioChatbot {
     font-size: 1.5rem;
     cursor: pointer;
     line-height: 1;
+    transition: color .2s;
+}
+#close-chat:hover, #close-chat:focus {
+    color: #ffd6e3;
 }
 #chat-messages {
     flex: 1;
@@ -124,12 +137,12 @@ class PortfolioChatbot {
     word-break: break-word;
 }
 .bot-message {
-    background: #e0f7fa;
+    background: #f3e6fa;
     color: #334155;
     align-self: flex-start;
 }
 .user-message {
-    background: #06b6d4;
+    background: linear-gradient(135deg, #ff3576 0%, #7b2ff2 100%);
     color: #fff;
     align-self: flex-end;
 }
@@ -146,15 +159,25 @@ class PortfolioChatbot {
     border-radius: .5rem;
     padding: .5rem;
     font-size: .97rem;
+    outline: none;
+    transition: border-color .2s;
+}
+#chat-input:focus {
+    border-color: #ff3576;
 }
 #send-message {
-    background: #06b6d4;
+    background: linear-gradient(135deg, #ff3576 0%, #7b2ff2 100%);
     color: #fff;
     padding: .5rem 1rem;
     border: none;
     border-radius: .5rem;
     cursor: pointer;
     font-size: .97rem;
+    transition: background .2s, box-shadow .2s;
+}
+#send-message:hover, #send-message:focus {
+    background: linear-gradient(135deg, #ff3576 20%, #7b2ff2 80%);
+    box-shadow: 0 2px 8px #7b2ff244;
 }
 #email-modal {
     display: none;
@@ -170,15 +193,25 @@ class PortfolioChatbot {
     border-radius: .5rem;
     padding: .5rem;
     font-size: .97rem;
+    outline: none;
+    transition: border-color .2s;
+}
+#email-input:focus {
+    border-color: #ff3576;
 }
 #submit-email {
-    background: #06b6d4;
+    background: linear-gradient(135deg, #ff3576 0%, #7b2ff2 100%);
     color: #fff;
     padding: .5rem 1rem;
     border: none;
     border-radius: .5rem;
     cursor: pointer;
     font-size: .97rem;
+    transition: background .2s, box-shadow .2s;
+}
+#submit-email:hover, #submit-email:focus {
+    background: linear-gradient(135deg, #ff3576 20%, #7b2ff2 80%);
+    box-shadow: 0 2px 8px #7b2ff244;
 }
 .chat-footer {
     background: #f1f5f9;
@@ -188,6 +221,9 @@ class PortfolioChatbot {
     padding: .7rem 1rem;
     border-radius: 0 0 1rem 1rem;
     border-top: 1px solid #e5e7eb;
+}
+a {
+    color: #ff3576;
 }
         `;
         document.head.appendChild(style);
@@ -202,6 +238,9 @@ class PortfolioChatbot {
         const emailInput = document.getElementById('email-input');
 
         chatIcon.addEventListener('click', () => this.toggleChat());
+        chatIcon.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') this.toggleChat();
+        });
         closeChat.addEventListener('click', () => this.toggleChat());
         sendButton.addEventListener('click', () => this.sendMessage());
         chatInput.addEventListener('keypress', (e) => {
@@ -217,6 +256,11 @@ class PortfolioChatbot {
         const chatWindow = document.getElementById('chat-window');
         this.isOpen = !this.isOpen;
         chatWindow.classList.toggle('open', this.isOpen);
+        if (this.isOpen) {
+            setTimeout(() => {
+                document.getElementById('chat-input').focus();
+            }, 200);
+        }
     }
 
     async sendMessage() {
