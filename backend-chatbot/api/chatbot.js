@@ -50,7 +50,7 @@ async function sendEmailToRon({ userMessage, userEmail }) {
 
 // Main handler
 module.exports = async (req, res) => {
-  // CORS HEADERS
+  // Set CORS headers for every request
   res.setHeader('Access-Control-Allow-Origin', ALLOWED_ORIGIN);
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -58,7 +58,8 @@ module.exports = async (req, res) => {
 
   // Handle preflight OPTIONS request
   if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+    res.status(200).end();
+    return;
   }
 
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method Not Allowed' });
