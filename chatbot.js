@@ -327,7 +327,7 @@ class PortfolioChatbot {
         if (
             !this.userName &&
             lastBotMessage &&
-            /name.*\?/i.test(lastBotMessage.textContent)
+            /name/i.test(lastBotMessage.textContent)
         ) {
             this.userName = message;
             localStorage.setItem('userName', this.userName);
