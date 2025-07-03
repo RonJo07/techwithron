@@ -19,7 +19,7 @@ class PortfolioChatbot {
             <div id="chatbot-container">
                 <div id="chat-icon">
                     <img src="LunaAI.png" alt="LunaAI" />
-                    <div id="chatbot-popup" class="hidden">Hey, I'm Luna! Chat with me!</div>
+                    <div id="chatbot-popup">Hey, I'm Luna! Chat with me!</div>
                 </div>
                 <div id="chat-window">
                     <div class="chat-header">
@@ -41,7 +41,7 @@ class PortfolioChatbot {
                         <button id="send-message">Send</button>
                     </div>
                     <div class="chat-footer">
-                        <span>AI chatbot developed by <a href="https://techwithron.co.in" target="_blank" rel="noopener" style="color:#06b6d4;text-decoration:underline;">techwithron</a></span>
+                        <span>AI chatbot developed by <a href="https://techwithron.co.in" target="_blank" rel="noopener" style="color:#111;text-decoration:underline;">techwithron</a></span>
                     </div>
                 </div>
             </div>
@@ -90,20 +90,21 @@ class PortfolioChatbot {
     bottom: 70px;
     left: 50%;
     transform: translateX(-50%);
-    background: #222;
+    background: #111;
     color: #fff;
     padding: 8px 16px;
     border-radius: 16px;
     font-size: 0.95rem;
     white-space: nowrap;
     box-shadow: 0 2px 8px #0004;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s;
-}
-#chatbot-popup.visible {
     opacity: 1;
     pointer-events: auto;
+    transition: opacity 0.3s;
+    z-index: 10000;
+}
+#chatbot-popup.hidden {
+    opacity: 0;
+    pointer-events: none;
 }
 #chat-window {
     display: none;
@@ -121,7 +122,7 @@ class PortfolioChatbot {
     display: flex;
 }
 .chat-header {
-    background: #06b6d4;
+    background: #111;
     color: #fff;
     padding: 1rem 1.2rem;
     border-radius: 1rem 1rem 0 0;
@@ -141,7 +142,7 @@ class PortfolioChatbot {
     transition: color .2s;
 }
 #close-chat:hover, #close-chat:focus {
-    color: #ffd6e3;
+    color: #ff3576;
 }
 #chat-messages {
     flex: 1;
@@ -160,13 +161,14 @@ class PortfolioChatbot {
     word-break: break-word;
 }
 .bot-message {
-    background: #e0f7fa;
-    color: #334155;
+    background: #f1f1f1;
+    color: #222;
     align-self: flex-start;
 }
 .user-message {
-    background: #06b6d4;
-    color: #fff;
+    background: #fff;
+    color: #111;
+    border: 1px solid #e5e7eb;
     align-self: flex-end;
 }
 #chat-input-container {
@@ -183,13 +185,15 @@ class PortfolioChatbot {
     padding: .5rem;
     font-size: .97rem;
     outline: none;
+    color: #111;
+    background: #fff;
     transition: border-color .2s;
 }
 #chat-input:focus {
-    border-color: #06b6d4;
+    border-color: #111;
 }
 #send-message {
-    background: #06b6d4;
+    background: #111;
     color: #fff;
     padding: .5rem 1rem;
     border: none;
@@ -199,8 +203,8 @@ class PortfolioChatbot {
     transition: background .2s, box-shadow .2s;
 }
 #send-message:hover, #send-message:focus {
-    background: #0891b2;
-    box-shadow: 0 2px 8px #06b6d444;
+    background: #222;
+    box-shadow: 0 2px 8px #1112;
 }
 #email-modal {
     display: none;
@@ -217,13 +221,15 @@ class PortfolioChatbot {
     padding: .5rem;
     font-size: .97rem;
     outline: none;
+    color: #111;
+    background: #fff;
     transition: border-color .2s;
 }
 #email-input:focus {
-    border-color: #06b6d4;
+    border-color: #111;
 }
 #submit-email {
-    background: #06b6d4;
+    background: #111;
     color: #fff;
     padding: .5rem 1rem;
     border: none;
@@ -233,12 +239,12 @@ class PortfolioChatbot {
     transition: background .2s, box-shadow .2s;
 }
 #submit-email:hover, #submit-email:focus {
-    background: #0891b2;
-    box-shadow: 0 2px 8px #06b6d444;
+    background: #222;
+    box-shadow: 0 2px 8px #1112;
 }
 .chat-footer {
     background: #f1f5f9;
-    color: #64748b;
+    color: #222;
     text-align: center;
     font-size: .93rem;
     padding: .7rem 1rem;
@@ -246,7 +252,7 @@ class PortfolioChatbot {
     border-top: 1px solid #e5e7eb;
 }
 a {
-    color: #06b6d4;
+    color: #111;
 }
         `;
         document.head.appendChild(style);
@@ -259,7 +265,6 @@ a {
         const chatInput = document.getElementById('chat-input');
         const submitEmail = document.getElementById('submit-email');
         const emailInput = document.getElementById('email-input');
-        const popup = document.getElementById('chatbot-popup');
 
         chatIcon.addEventListener('click', () => {
             this.toggleChat();
@@ -274,31 +279,19 @@ a {
         emailInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.submitEmail();
         });
-        // Hide popup on hover/click
-        chatIcon.addEventListener('mouseenter', () => this.hideWelcomePopup());
     }
 
     showWelcomePopup() {
         const popup = document.getElementById('chatbot-popup');
         if (popup) {
             popup.classList.remove('hidden');
-            setTimeout(() => {
-                popup.classList.add('visible');
-            }, 300);
-            // Auto-hide after 5 seconds
-            setTimeout(() => {
-                this.hideWelcomePopup();
-            }, 5000);
         }
     }
 
     hideWelcomePopup() {
         const popup = document.getElementById('chatbot-popup');
         if (popup) {
-            popup.classList.remove('visible');
-            setTimeout(() => {
-                popup.classList.add('hidden');
-            }, 300);
+            popup.classList.add('hidden');
         }
     }
 
@@ -306,6 +299,9 @@ a {
         const chatWindow = document.getElementById('chat-window');
         this.isOpen = !this.isOpen;
         chatWindow.classList.toggle('open', this.isOpen);
+        if (this.isOpen) {
+            this.hideWelcomePopup();
+        }
     }
 
     async sendMessage() {
