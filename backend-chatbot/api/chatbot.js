@@ -4,6 +4,7 @@ const pdfParse = require('pdf-parse');
 const mammoth = require('mammoth');
 const fs = require('fs');
 const path = require('path');
+const fetch = require('node-fetch');
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const EMAIL_USER = process.env.EMAIL_USER;
