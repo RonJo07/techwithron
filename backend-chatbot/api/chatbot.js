@@ -133,6 +133,9 @@ module.exports = async (req, res) => {
       // Prepend Luna AI introduction if this is the first message
       if (isFirstMessage) {
         aiResponse = "Hi! I'm Luna AI, Ron Jo's AI assistant. Ask me anything about Ron's experience, projects, or skills!\n\n" + aiResponse;
+      } else if (/^\s*(hi|hello|hey|greetings|good morning|good afternoon|good evening)\s*$/i.test(message)) {
+        // If the user greets again, reply with a short greeting only
+        aiResponse = "Hello! How can I assist you today with information about Ron Jo?";
       }
 
       // If AI doesn't know, forward to Ron
