@@ -336,6 +336,7 @@ class PortfolioChatbot {
             document.getElementById('chat-input').disabled = true;
             document.getElementById('send-message').disabled = true;
             // Immediately send a new message to the backend with the name to get a personalized greeting
+            console.log('Sending name to backend:', this.userName);
             const response = await this.getAIResponse(""); // send an empty message, but with userName set
             this.addMessage(response.response.replace(/LunaAI/g, 'OrionAI').replace(/Luna AI/g, 'Orion AI'), 'bot');
             // Re-enable input after greeting
