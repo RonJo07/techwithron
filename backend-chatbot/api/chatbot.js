@@ -3,6 +3,7 @@ const pdfParse = require('pdf-parse');
 const mammoth = require('mammoth');
 const fs = require('fs');
 const path = require('path');
+const { spawnSync } = require('child_process');
 
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
@@ -14,9 +15,11 @@ const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || 'https://techwithron.co.in'
 // Helper: Extract text from PDF
 async function extractPdfText(pdfPath) {
   if (fs.existsSync(pdfPath)) {
-    const dataBuffer = fs.readFileSync(pdfPath);
-    const data = await pdfParse(dataBuffer);
-    return data.text;
+    // Use Python and PyPDF2 to extract text
+    const pyScript = `import sys\nfrom PyPDF2 import PdfReader\nreader = PdfReader(sys.argv[1])\ntext = ''\nfor page in reader.pages:\n    text += page.extract_text() or ''\nprint(text[:4000])`;
+    const result = spawnSync('python', ['-c', pyScript, pdfPath], { encoding: 'utf-8' });
+    if (result.stdout) return result.stdout;
+    if (result.stderr) console.error('PyPDF2 error:', result.stderr);
   }
   return '';
 }
@@ -123,13 +126,20 @@ PROJECTS:
 SKILLS:
 - C#, JavaScript, Python, SQL, ASP.NET Core MVC, React, FastAPI, AWS (EC2, S3, RDS, Lambda), Docker, SQL Server, MySQL, Supabase, Git, Visual Studio, VS Code, Crystal Reports, TDD, CI/CD, RESTful APIs, MVC
 
+HOBBIES:
+- Ron enjoys coding, testing new technologies, playing games, travelling, cooking, and more in his free time.
+
+LINKEDIN:
+- Ron's LinkedIn: https://www.linkedin.com/in/ron-jo-linkme
+
 INSTRUCTIONS:
 - Be friendly and professional
-- Answer questions about Ron's experience, projects, and skills
+- Answer questions about Ron's experience, projects, skills, hobbies, and LinkedIn
 - If asked about something not covered, say: "I don't have specific information about that. Let me forward your question to Ron so he can provide you with accurate information."
 - If someone wants to communicate with Ron, ask for their email address and forward it to Ron
 - Keep responses concise but informative
 - Never make up information not provided in the context
+- If asked for a list of random questions people have asked, provide a sample list such as: ["What are Ron's hobbies?", "What projects has Ron worked on?", "How can I contact Ron?", "What skills does Ron have?", "What is Ron's LinkedIn?"]
 `;
 
   const context = `${system_prompt}\n\nRESUME DATA (extracted from Ron_Jo_Resume.docx):\n${resumeText.slice(0, 4000)}\n\nPROFILE PDF DATA (extracted from profile.pdf):\n${profileText.slice(0, 4000)}`;
@@ -138,6 +148,42 @@ INSTRUCTIONS:
   let aiResponse = '';
   let requiresEmail = false;
   let needsEmailCollection = false;
+
+  // If userName is not present, always ask for the name before answering anything else
+  if (!userName) {
+    aiResponse = "Before we continue, may I know your name?";
+    return res.json({ response: aiResponse, requiresEmail, needsEmailCollection });
+  }
+
+  // Custom handling for skills
+  if (/^skills?$/i.test(message.trim()) || /what (are|is) (ron'?s )?skills?/i.test(message)) {
+    aiResponse = "Ron is skilled in C#, JavaScript, Python, SQL, ASP.NET Core MVC, React, FastAPI, AWS (EC2, S3, RDS, Lambda), Docker, SQL Server, MySQL, Supabase, Git, Visual Studio, VS Code, Crystal Reports, TDD, CI/CD, RESTful APIs, and MVC.";
+    return res.json({ response: aiResponse, requiresEmail, needsEmailCollection });
+  }
+
+  // Custom handling for hobbies
+  if (/hobby|hobbies/i.test(message)) {
+    aiResponse = "Ron enjoys coding, testing new technologies, playing games, travelling, cooking, and more in his free time.";
+    return res.json({ response: aiResponse, requiresEmail, needsEmailCollection });
+  }
+
+  // Custom handling for LinkedIn
+  if (/linkedin\s*id|linkedin|linked in/i.test(message)) {
+    aiResponse = "You can find Ron's LinkedIn profile here: https://www.linkedin.com/in/ron-jo-linkme";
+    return res.json({ response: aiResponse, requiresEmail, needsEmailCollection });
+  }
+
+  // Custom handling for random questions
+  if (/random questions|ask me the question people asked randomly|sample questions|example questions/i.test(message)) {
+    aiResponse = "Here are some questions people have asked Ron's assistant:\n- What are Ron's hobbies?\n- What projects has Ron worked on?\n- How can I contact Ron?\n- What skills does Ron have?\n- What is Ron's LinkedIn?";
+    return res.json({ response: aiResponse, requiresEmail, needsEmailCollection });
+  }
+
+  // Custom handling for user offering to share more about themselves
+  if (/do you want to know anything more about me|should i share more about myself|do you want to know more about me|anything else you want to know about me/i.test(message)) {
+    aiResponse = "Thank you for offering to share more about yourself! As Ron Jo's AI assistant, I'm here to help answer questions about Ron. If you'd like to share more about yourself or leave a message for Ron, please let me know and I can forward it to him.";
+    return res.json({ response: aiResponse, requiresEmail, needsEmailCollection });
+  }
 
   // Detect if user wants to contact you
   if (
@@ -203,11 +249,6 @@ INSTRUCTIONS:
     aiResponse = "AI is currently unavailable. Please leave your email and Ron will get back to you!";
     requiresEmail = true;
     await sendEmailToRon({ userMessage: message, userEmail });
-  }
-
-  if (!userName) {
-    aiResponse = "Before we continue, may I know your name?";
-    return res.json({ response: aiResponse, requiresEmail, needsEmailCollection });
   }
 
   // If userName is present and the message is empty, greet the user
