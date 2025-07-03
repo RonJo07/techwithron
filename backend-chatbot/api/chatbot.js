@@ -63,7 +63,7 @@ module.exports = async (req, res) => {
 
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method Not Allowed' });
 
-  const { message, userEmail } = req.body;
+  const { message, userEmail, isFirstMessage } = req.body;
 
   // Extract data from files
   const resumePath = path.join(__dirname, '../data/Ron_Jo_Resume.docx');
@@ -81,9 +81,9 @@ module.exports = async (req, res) => {
 
   // Compose context from your site, resume, and PDFs
   const system_prompt =
-    `You are acting as assistant for  ${name}. You are answering questions on ${name}'s website, particularly questions related to ${name}'s career, background, skills and experience. Your responsibility is to represent ${name} for interactions on the website as faithfully as possible. You are given a summary of ${name}'s background and LinkedIn profile which you can use to answer questions. Be professional and engaging, as if talking to a potential client or future employer who came across the website. If you don't know the answer to any question, use your record_unknown_question tool to record the question that you couldn't answer, even if it's about something trivial or unrelated to career. If the user is engaging in discussion, try to steer them towards getting in touch via email; ask for their email and record it using your record_user_details tool.` +
+    `You are Luna AI, the professional AI assistant for Ron Jo. You are answering questions on Ron Jo's website, particularly questions related to Ron Jo's career, background, skills, and experience. Your responsibility is to represent Ron Jo for interactions on the website as faithfully and professionally as possible. You are given a summary of Ron Jo's background and LinkedIn profile which you can use to answer questions.\n\nAt the start of a new conversation, introduce yourself as Luna AI, Ron Jo's assistant, and offer to help with questions about Ron's experience, projects, or skills. Do NOT repeat the same greeting or introduction in every message—only at the beginning of a new conversation. For all other replies, answer directly and professionally.\n\nIf you don't know the answer to any question, use your record_unknown_question tool to record the question that you couldn't answer, even if it's about something trivial or unrelated to career. If the user is engaging in discussion, try to steer them towards getting in touch via email; ask for their email and record it using your record_user_details tool.` +
     `\n\n## Summary:\n${summary}\n\n## LinkedIn Profile:\n${linkedin}\n\n` +
-    `With this context, please chat with the user, always staying in character as ${name}.`;
+    `With this context, please chat with the user, always staying in character as Luna AI, Ron Jo's assistant.`;
 
   const context = `${system_prompt}\n\nRESUME DATA (extracted from Ron_Jo_Resume.docx):\n${resumeText.slice(0, 4000)}\n\nPROFILE PDF DATA (extracted from profile.pdf):\n${profileText.slice(0, 4000)}`;
 
@@ -129,6 +129,11 @@ module.exports = async (req, res) => {
       aiResponse =
         geminiData.candidates?.[0]?.content?.parts?.[0]?.text ||
         "Sorry, I couldn't process your request right now. Please leave your email and I'll get back to you!";
+
+      // Prepend Luna AI introduction if this is the first message
+      if (isFirstMessage) {
+        aiResponse = "Hi! I'm Luna AI, Ron Jo's AI assistant. Ask me anything about Ron's experience, projects, or skills!\n\n" + aiResponse;
+      }
 
       // If AI doesn't know, forward to Ron
       if (

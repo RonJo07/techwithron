@@ -4,6 +4,7 @@ class PortfolioChatbot {
     constructor() {
         this.isOpen = false;
         this.userEmail = null;
+        this.isFirstMessage = true;
         this.init();
     }
 
@@ -317,6 +318,7 @@ class PortfolioChatbot {
         this.showTypingIndicator();
         try {
             const response = await this.getAIResponse(message);
+            this.isFirstMessage = false;
             this.hideTypingIndicator();
             if (response.needsEmailCollection) {
                 this.showEmailCollection();
@@ -333,7 +335,11 @@ class PortfolioChatbot {
         const response = await fetch(API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message, userEmail: this.userEmail })
+            body: JSON.stringify({ 
+                message, 
+                userEmail: this.userEmail,
+                isFirstMessage: this.isFirstMessage
+            })
         });
         if (!response.ok) throw new Error('API request failed');
         return await response.json();
