@@ -5,7 +5,7 @@ class PortfolioChatbot {
         this.isOpen = false;
         this.userEmail = null;
         this.isFirstMessage = true;
-        this.userName = null;
+        this.userName = localStorage.getItem('userName') || null;
         this.init();
     }
 
@@ -324,6 +324,7 @@ class PortfolioChatbot {
         // If waiting for name, treat this message as the user's name
         if (!this.userName && lastBotMessage && /may I know your name\?|please tell your name|what is your name/i.test(lastBotMessage.textContent)) {
             this.userName = message;
+            localStorage.setItem('userName', this.userName);
             this.hideTypingIndicator();
             // Immediately send a new message to the backend with the name to get a personalized greeting
             const response = await this.getAIResponse(""); // send an empty message, but with userName set
