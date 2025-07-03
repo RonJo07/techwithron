@@ -6,6 +6,7 @@ class PortfolioChatbot {
         this.userEmail = null;
         this.isFirstMessage = true;
         this.userName = localStorage.getItem('userName') || null;
+        this.lastBotPrompt = "";
         this.init();
     }
 
@@ -321,25 +322,16 @@ class PortfolioChatbot {
         input.value = '';
         this.showTypingIndicator();
 
-        const messagesContainer = document.getElementById('chat-messages');
-        const lastBotMessage = Array.from(messagesContainer.getElementsByClassName('bot-message')).pop();
-
-        if (
-            !this.userName &&
-            lastBotMessage &&
-            /name/i.test(lastBotMessage.textContent)
-        ) {
+        // Robust name-capture logic
+        const namePromptRegex = /(name|call\s+you|your\s+title)/i;
+        if (!this.userName && this.lastBotPrompt && namePromptRegex.test(this.lastBotPrompt)) {
             this.userName = message;
             localStorage.setItem('userName', this.userName);
             this.hideTypingIndicator();
-            // Disable input until greeting is received
             document.getElementById('chat-input').disabled = true;
             document.getElementById('send-message').disabled = true;
-            // Immediately send a new message to the backend with the name to get a personalized greeting
-            console.log('Sending name to backend:', this.userName);
             const response = await this.getAIResponse(""); // send an empty message, but with userName set
             this.addMessage(response.response.replace(/LunaAI/g, 'OrionAI').replace(/Luna AI/g, 'Orion AI'), 'bot');
-            // Re-enable input after greeting
             document.getElementById('chat-input').disabled = false;
             document.getElementById('send-message').disabled = false;
             return;
@@ -384,6 +376,9 @@ class PortfolioChatbot {
         messageDiv.textContent = message;
         messagesContainer.appendChild(messageDiv);
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        if (sender === 'bot') {
+            this.lastBotPrompt = message;
+        }
     }
 
     showEmailCollection() {
