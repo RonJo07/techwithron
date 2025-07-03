@@ -11,18 +11,20 @@ class PortfolioChatbot {
         this.createChatbotHTML();
         this.injectStyles();
         this.bindEvents();
+        this.showWelcomePopup();
     }
 
     createChatbotHTML() {
         const chatbotHTML = `
             <div id="chatbot-container">
-                <div id="chat-icon" tabindex="0" aria-label="Open LunaAI chat">
+                <div id="chat-icon">
                     <img src="LunaAI.png" alt="LunaAI" />
+                    <div id="chatbot-popup" class="hidden">Hey, I'm Luna! Chat with me!</div>
                 </div>
-                <div id="chat-window" aria-modal="true" role="dialog">
+                <div id="chat-window">
                     <div class="chat-header">
                         <span>LunaAI</span>
-                        <button id="close-chat" title="Close" aria-label="Close chat">&times;</button>
+                        <button id="close-chat" title="Close">&times;</button>
                     </div>
                     <div id="chat-messages">
                         <div class="bot-message">Hi! I'm LunaAI, Ron Jo's AI assistant. Ask me anything about Ron's experience, projects, or skills!</div>
@@ -30,16 +32,16 @@ class PortfolioChatbot {
                     <div id="email-modal">
                         <div>Please provide your email:</div>
                         <div style="display:flex;gap:.5rem;">
-                            <input type="email" id="email-input" placeholder="your@email.com" autocomplete="email">
+                            <input type="email" id="email-input" placeholder="your@email.com">
                             <button id="submit-email">Send</button>
                         </div>
                     </div>
                     <div id="chat-input-container">
-                        <input type="text" id="chat-input" placeholder="Type your message..." autocomplete="off">
+                        <input type="text" id="chat-input" placeholder="Type your message...">
                         <button id="send-message">Send</button>
                     </div>
                     <div class="chat-footer">
-                        <span>AI chatbot developed by <a href="https://techwithron.co.in" target="_blank" rel="noopener" style="color:#ff3576;text-decoration:underline;">techwithron</a></span>
+                        <span>AI chatbot developed by <a href="https://techwithron.co.in" target="_blank" rel="noopener" style="color:#06b6d4;text-decoration:underline;">techwithron</a></span>
                     </div>
                 </div>
             </div>
@@ -67,13 +69,10 @@ class PortfolioChatbot {
     justify-content: center;
     box-shadow: 0 2px 8px #0002;
     cursor: pointer;
+    position: relative;
     transition: transform .2s, box-shadow .2s;
     outline: none;
     border: none;
-}
-#chat-icon:focus, #chat-icon:hover {
-    transform: scale(1.08);
-    box-shadow: 0 4px 16px #7b2ff244;
 }
 #chat-icon img {
     width: 36px;
@@ -81,6 +80,30 @@ class PortfolioChatbot {
     border-radius: 50%;
     object-fit: cover;
     display: block;
+}
+#chat-icon:hover {
+    transform: scale(1.08);
+    box-shadow: 0 4px 16px #7b2ff244;
+}
+#chatbot-popup {
+    position: absolute;
+    bottom: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #222;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 16px;
+    font-size: 0.95rem;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px #0004;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+}
+#chatbot-popup.visible {
+    opacity: 1;
+    pointer-events: auto;
 }
 #chat-window {
     display: none;
@@ -98,7 +121,7 @@ class PortfolioChatbot {
     display: flex;
 }
 .chat-header {
-    background: linear-gradient(135deg, #ff3576 0%, #7b2ff2 100%);
+    background: #06b6d4;
     color: #fff;
     padding: 1rem 1.2rem;
     border-radius: 1rem 1rem 0 0;
@@ -137,12 +160,12 @@ class PortfolioChatbot {
     word-break: break-word;
 }
 .bot-message {
-    background: #f3e6fa;
+    background: #e0f7fa;
     color: #334155;
     align-self: flex-start;
 }
 .user-message {
-    background: linear-gradient(135deg, #ff3576 0%, #7b2ff2 100%);
+    background: #06b6d4;
     color: #fff;
     align-self: flex-end;
 }
@@ -163,10 +186,10 @@ class PortfolioChatbot {
     transition: border-color .2s;
 }
 #chat-input:focus {
-    border-color: #ff3576;
+    border-color: #06b6d4;
 }
 #send-message {
-    background: linear-gradient(135deg, #ff3576 0%, #7b2ff2 100%);
+    background: #06b6d4;
     color: #fff;
     padding: .5rem 1rem;
     border: none;
@@ -176,8 +199,8 @@ class PortfolioChatbot {
     transition: background .2s, box-shadow .2s;
 }
 #send-message:hover, #send-message:focus {
-    background: linear-gradient(135deg, #ff3576 20%, #7b2ff2 80%);
-    box-shadow: 0 2px 8px #7b2ff244;
+    background: #0891b2;
+    box-shadow: 0 2px 8px #06b6d444;
 }
 #email-modal {
     display: none;
@@ -197,10 +220,10 @@ class PortfolioChatbot {
     transition: border-color .2s;
 }
 #email-input:focus {
-    border-color: #ff3576;
+    border-color: #06b6d4;
 }
 #submit-email {
-    background: linear-gradient(135deg, #ff3576 0%, #7b2ff2 100%);
+    background: #06b6d4;
     color: #fff;
     padding: .5rem 1rem;
     border: none;
@@ -210,8 +233,8 @@ class PortfolioChatbot {
     transition: background .2s, box-shadow .2s;
 }
 #submit-email:hover, #submit-email:focus {
-    background: linear-gradient(135deg, #ff3576 20%, #7b2ff2 80%);
-    box-shadow: 0 2px 8px #7b2ff244;
+    background: #0891b2;
+    box-shadow: 0 2px 8px #06b6d444;
 }
 .chat-footer {
     background: #f1f5f9;
@@ -223,7 +246,7 @@ class PortfolioChatbot {
     border-top: 1px solid #e5e7eb;
 }
 a {
-    color: #ff3576;
+    color: #06b6d4;
 }
         `;
         document.head.appendChild(style);
@@ -236,10 +259,11 @@ a {
         const chatInput = document.getElementById('chat-input');
         const submitEmail = document.getElementById('submit-email');
         const emailInput = document.getElementById('email-input');
+        const popup = document.getElementById('chatbot-popup');
 
-        chatIcon.addEventListener('click', () => this.toggleChat());
-        chatIcon.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') this.toggleChat();
+        chatIcon.addEventListener('click', () => {
+            this.toggleChat();
+            this.hideWelcomePopup();
         });
         closeChat.addEventListener('click', () => this.toggleChat());
         sendButton.addEventListener('click', () => this.sendMessage());
@@ -250,17 +274,38 @@ a {
         emailInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.submitEmail();
         });
+        // Hide popup on hover/click
+        chatIcon.addEventListener('mouseenter', () => this.hideWelcomePopup());
+    }
+
+    showWelcomePopup() {
+        const popup = document.getElementById('chatbot-popup');
+        if (popup) {
+            popup.classList.remove('hidden');
+            setTimeout(() => {
+                popup.classList.add('visible');
+            }, 300);
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                this.hideWelcomePopup();
+            }, 5000);
+        }
+    }
+
+    hideWelcomePopup() {
+        const popup = document.getElementById('chatbot-popup');
+        if (popup) {
+            popup.classList.remove('visible');
+            setTimeout(() => {
+                popup.classList.add('hidden');
+            }, 300);
+        }
     }
 
     toggleChat() {
         const chatWindow = document.getElementById('chat-window');
         this.isOpen = !this.isOpen;
         chatWindow.classList.toggle('open', this.isOpen);
-        if (this.isOpen) {
-            setTimeout(() => {
-                document.getElementById('chat-input').focus();
-            }, 200);
-        }
     }
 
     async sendMessage() {
