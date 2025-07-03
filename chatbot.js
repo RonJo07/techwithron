@@ -20,16 +20,16 @@ class PortfolioChatbot {
         const chatbotHTML = `
             <div id="chatbot-container">
                 <div id="chat-icon">
-                    <img src="LunaAI.png" alt="LunaAI" />
-                    <div id="chatbot-popup">Hey, I'm Luna! Chat with me!</div>
+                    <img src="LunaAI.png" alt="OrionAI" />
+                    <div id="chatbot-popup">Hey, I'm Orion! Chat with me!</div>
                 </div>
                 <div id="chat-window">
                     <div class="chat-header">
-                        <span>LunaAI</span>
+                        <span>OrionAI</span>
                         <button id="close-chat" title="Close">&times;</button>
                     </div>
                     <div id="chat-messages">
-                        <div class="bot-message">Hi! I'm LunaAI, Ron Jo's AI assistant. Ask me anything about Ron's experience, projects, or skills!</div>
+                        <div class="bot-message">Hi! I'm OrionAI, Ron Jo's AI assistant. Ask me anything about Ron's experience, projects, or skills!</div>
                     </div>
                     <div id="name-modal">
                         <div>Please enter your name:</div>
@@ -380,7 +380,7 @@ class PortfolioChatbot {
             } else if (response.needsEmailCollection) {
                 this.showEmailCollection();
             } else {
-                this.addMessage(response.response, 'bot');
+                this.addMessage(response.response.replace(/LunaAI/g, 'OrionAI').replace(/Luna AI/g, 'Orion AI'), 'bot');
             }
         } catch (error) {
             this.hideTypingIndicator();
