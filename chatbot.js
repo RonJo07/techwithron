@@ -59,7 +59,7 @@ class PortfolioChatbot {
     z-index: 9999;
     font-family: 'Segoe UI', Arial, sans-serif;
 }
-#chat-icon {
+#chatbot-container #chat-icon {
     background: linear-gradient(135deg, #ff3576 0%, #7b2ff2 100%);
     border-radius: 50%;
     width: 56px;
@@ -74,18 +74,18 @@ class PortfolioChatbot {
     outline: none;
     border: none;
 }
-#chat-icon img {
+#chatbot-container #chat-icon img {
     width: 36px;
     height: 36px;
     border-radius: 50%;
     object-fit: cover;
     display: block;
 }
-#chat-icon:hover {
+#chatbot-container #chat-icon:hover {
     transform: scale(1.08);
     box-shadow: 0 4px 16px #7b2ff244;
 }
-#chatbot-popup {
+#chatbot-container #chatbot-popup {
     position: absolute;
     bottom: 70px;
     left: 50%;
@@ -102,11 +102,11 @@ class PortfolioChatbot {
     transition: opacity 0.3s;
     z-index: 10000;
 }
-#chatbot-popup.hidden {
+#chatbot-container #chatbot-popup.hidden {
     opacity: 0;
     pointer-events: none;
 }
-#chat-window {
+#chatbot-container #chat-window {
     display: none;
     flex-direction: column;
     background: #fff;
@@ -118,10 +118,10 @@ class PortfolioChatbot {
     margin-bottom: 0.5rem;
     overflow: hidden;
 }
-#chat-window.open {
+#chatbot-container #chat-window.open {
     display: flex;
 }
-.chat-header {
+#chatbot-container .chat-header {
     background: #111;
     color: #fff;
     padding: 1rem 1.2rem;
@@ -132,7 +132,7 @@ class PortfolioChatbot {
     font-weight: bold;
     font-size: 1.1rem;
 }
-#close-chat {
+#chatbot-container #close-chat {
     background: none;
     border: none;
     color: #fff;
@@ -141,10 +141,11 @@ class PortfolioChatbot {
     line-height: 1;
     transition: color .2s;
 }
-#close-chat:hover, #close-chat:focus {
+#chatbot-container #close-chat:hover, 
+#chatbot-container #close-chat:focus {
     color: #ff3576;
 }
-#chat-messages {
+#chatbot-container #chat-messages {
     flex: 1;
     padding: 1rem;
     overflow-y: auto;
@@ -153,32 +154,33 @@ class PortfolioChatbot {
     flex-direction: column;
     gap: 0.5rem;
 }
-.bot-message, .user-message {
+#chatbot-container .bot-message, 
+#chatbot-container .user-message {
     max-width: 80%;
     padding: .7rem 1rem;
     border-radius: 1rem;
     font-size: .97rem;
     word-break: break-word;
 }
-.bot-message {
+#chatbot-container .bot-message {
     background: #f1f1f1;
     color: #222;
     align-self: flex-start;
 }
-.user-message {
+#chatbot-container .user-message {
     background: #fff;
     color: #111;
     border: 1px solid #e5e7eb;
     align-self: flex-end;
 }
-#chat-input-container {
+#chatbot-container #chat-input-container {
     display: flex;
     gap: .5rem;
     padding: 1rem;
     border-top: 1px solid #e5e7eb;
     background: #fff;
 }
-#chat-input {
+#chatbot-container #chat-input {
     flex: 1;
     border: 1px solid #cbd5e1;
     border-radius: .5rem;
@@ -189,10 +191,10 @@ class PortfolioChatbot {
     background: #fff;
     transition: border-color .2s;
 }
-#chat-input:focus {
+#chatbot-container #chat-input:focus {
     border-color: #111;
 }
-#send-message {
+#chatbot-container #send-message {
     background: #111;
     color: #fff;
     padding: .5rem 1rem;
@@ -202,11 +204,12 @@ class PortfolioChatbot {
     font-size: .97rem;
     transition: background .2s, box-shadow .2s;
 }
-#send-message:hover, #send-message:focus {
+#chatbot-container #send-message:hover, 
+#chatbot-container #send-message:focus {
     background: #222;
     box-shadow: 0 2px 8px #1112;
 }
-#email-modal {
+#chatbot-container #email-modal {
     display: none;
     padding: 1rem;
     border-top: 1px solid #e5e7eb;
@@ -214,7 +217,7 @@ class PortfolioChatbot {
     flex-direction: column;
     gap: .5rem;
 }
-#email-input {
+#chatbot-container #email-input {
     flex: 1;
     border: 1px solid #cbd5e1;
     border-radius: .5rem;
@@ -225,10 +228,10 @@ class PortfolioChatbot {
     background: #fff;
     transition: border-color .2s;
 }
-#email-input:focus {
+#chatbot-container #email-input:focus {
     border-color: #111;
 }
-#submit-email {
+#chatbot-container #submit-email {
     background: #111;
     color: #fff;
     padding: .5rem 1rem;
@@ -238,11 +241,12 @@ class PortfolioChatbot {
     font-size: .97rem;
     transition: background .2s, box-shadow .2s;
 }
-#submit-email:hover, #submit-email:focus {
+#chatbot-container #submit-email:hover, 
+#chatbot-container #submit-email:focus {
     background: #222;
     box-shadow: 0 2px 8px #1112;
 }
-.chat-footer {
+#chatbot-container .chat-footer {
     background: #f1f5f9;
     color: #222;
     text-align: center;
@@ -251,7 +255,7 @@ class PortfolioChatbot {
     border-radius: 0 0 1rem 1rem;
     border-top: 1px solid #e5e7eb;
 }
-a {
+#chatbot-container .chat-footer a {
     color: #111;
 }
         `;
