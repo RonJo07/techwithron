@@ -163,6 +163,12 @@ module.exports = async (req, res) => {
     return res.json({ response: aiResponse, requiresEmail, needsEmailCollection });
   }
 
+  // If userName is present and the message is empty, greet the user by name
+  if (userName && (!message || message.trim() === "")) {
+    aiResponse = `Welcome, ${userName}! How can I help you today?`;
+    return res.json({ response: aiResponse, requiresEmail, needsEmailCollection });
+  }
+
   // If userName is provided, prepend it to the greeting/response (except when asking for the name)
   if (userName) {
     // Only prepend if not already a greeting for name request
