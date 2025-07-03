@@ -139,6 +139,9 @@ INSTRUCTIONS:
   let requiresEmail = false;
   let needsEmailCollection = false;
 
+  // Add a variable to track the last greeted userName in the session
+  let lastGreetedUserName = null;
+
   // Detect if user wants to contact you
   if (
     /contact|email|communicate|reach out|connect/i.test(message)
@@ -210,8 +213,9 @@ INSTRUCTIONS:
     return res.json({ response: aiResponse, requiresEmail, needsEmailCollection });
   }
 
-  // If userName is present and the message is empty, greet the user by name
-  if (userName && (!message || message.trim() === "")) {
+  // If userName is present and it is new (not greeted before), greet the user
+  if (userName && userName !== lastGreetedUserName) {
+    lastGreetedUserName = userName;
     aiResponse = `Welcome, ${userName}! How can I help you today?`;
     return res.json({ response: aiResponse, requiresEmail, needsEmailCollection });
   }
