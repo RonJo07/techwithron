@@ -332,9 +332,15 @@ class PortfolioChatbot {
             this.userName = message;
             localStorage.setItem('userName', this.userName);
             this.hideTypingIndicator();
+            // Disable input until greeting is received
+            document.getElementById('chat-input').disabled = true;
+            document.getElementById('send-message').disabled = true;
             // Immediately send a new message to the backend with the name to get a personalized greeting
             const response = await this.getAIResponse(""); // send an empty message, but with userName set
             this.addMessage(response.response.replace(/LunaAI/g, 'OrionAI').replace(/Luna AI/g, 'Orion AI'), 'bot');
+            // Re-enable input after greeting
+            document.getElementById('chat-input').disabled = false;
+            document.getElementById('send-message').disabled = false;
             return;
         }
 
